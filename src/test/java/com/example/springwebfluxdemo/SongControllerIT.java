@@ -3,6 +3,7 @@ package com.example.springwebfluxdemo;
 import java.time.LocalDate;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,25 +59,7 @@ class SongControllerIT {
 
   @Test
   public void getSongById_returnsSongDto_whenSongExists() {
-    SpotifySong song =
-        songRepository
-            .save(
-                SpotifySong.builder()
-                    .spotifyId("test-spotify-id")
-                    .name("Test Song")
-                    .artists("Test Artist")
-                    .dailyRank(1)
-                    .dailyMovement(0)
-                    .weeklyMovement(0)
-                    .country("US")
-                    .snapshotDate(LocalDate.of(2024, 1, 1))
-                    .popularity(50)
-                    .isExplicit(false)
-                    .durationMs(180000)
-                    .albumName("Test Album")
-                    .albumReleaseDate(LocalDate.of(2023, 1, 1))
-                    .build())
-            .block();
+    SpotifySong song = addSongWithName("Test Song");
 
     webTestClient
         .get()
@@ -105,5 +88,46 @@ class SongControllerIT {
         .isNotFound()
         .expectBody(String.class)
         .isEqualTo("not found");
+  }
+
+  @Test
+  void findByName_returnsSongs_whenSongsExist() {
+    addSongWithName("Test Song 1");
+    addSongWithName("Test Song 2");
+
+    webTestClient
+        .get()
+        .uri("/search?search=Test song 1")
+        .exchange()
+        .expectStatus()
+        .isOk()
+        .expectBodyList(SongDto.class)
+        .hasSize(1)
+        .consumeWith(
+            response -> {
+              SongDto song = response.getResponseBody().getFirst();
+              Assertions.assertEquals("Test Song 1", song.getName());
+            });
+  }
+
+  private SpotifySong addSongWithName(String name) {
+    return songRepository
+        .save(
+            SpotifySong.builder()
+                .spotifyId("test-spotify-id")
+                .name(name)
+                .artists("Test Artist")
+                .dailyRank(1)
+                .dailyMovement(0)
+                .weeklyMovement(0)
+                .country("US")
+                .snapshotDate(LocalDate.of(2024, 1, 1))
+                .popularity(50)
+                .isExplicit(false)
+                .durationMs(180000)
+                .albumName("Test Album")
+                .albumReleaseDate(LocalDate.of(2023, 1, 1))
+                .build())
+        .block();
   }
 }
