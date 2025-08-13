@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class SongDto {
-    private Long id;
-    private String spotifyId;
-    private String name;
-    private String artists;
+  private Long id;
+  private String spotifyId;
+  private String name;
+  private String artists;
 }

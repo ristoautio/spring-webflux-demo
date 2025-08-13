@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class SongExceptionHandler {
 
-     @ExceptionHandler(SongNotFoundException.class)
-     public ResponseEntity<String> handleSongNotFound(SongNotFoundException ex) {
-         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-     }
+  @ExceptionHandler(SongNotFoundException.class)
+  public ResponseEntity<String> handleSongNotFound(SongNotFoundException ex) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+  }
 }

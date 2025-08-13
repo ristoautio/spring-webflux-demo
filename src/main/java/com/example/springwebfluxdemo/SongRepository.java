@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface SongRepository extends ReactiveCrudRepository<SpotifySong, Long> {
 
-    Mono<SongDto> getById(Long id);
+  Mono<SongDto> getById(Long id);
 }

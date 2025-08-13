@@ -1,5 +1,8 @@
 package com.example.springwebfluxdemo;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,10 +11,6 @@ import org.springframework.data.annotation.*;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Table
 @Data
 @Builder
@@ -19,89 +18,88 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SpotifySong {
 
-    @Id
-    private Long id;
+  @Id private Long id;
 
-    @Column("spotify_id")
-    private String spotifyId;
+  @Column("spotify_id")
+  private String spotifyId;
 
-    @Column("name")
-    private String name;
+  @Column("name")
+  private String name;
 
-    @Column("artists")
-    private String artists;
+  @Column("artists")
+  private String artists;
 
-    @Column("daily_rank")
-    private Integer dailyRank;
+  @Column("daily_rank")
+  private Integer dailyRank;
 
-    @Column("daily_movement")
-    private Integer dailyMovement;
+  @Column("daily_movement")
+  private Integer dailyMovement;
 
-    @Column("weekly_movement")
-    private Integer weeklyMovement;
+  @Column("weekly_movement")
+  private Integer weeklyMovement;
 
-    @Column("country")
-    private String country;
+  @Column("country")
+  private String country;
 
-    @Column("snapshot_date")
-    private LocalDate snapshotDate;
+  @Column("snapshot_date")
+  private LocalDate snapshotDate;
 
-    @Column("popularity")
-    private Integer popularity;
+  @Column("popularity")
+  private Integer popularity;
 
-    @Column("is_explicit")
-    private Boolean isExplicit;
+  @Column("is_explicit")
+  private Boolean isExplicit;
 
-    @Column("duration_ms")
-    private Integer durationMs;
+  @Column("duration_ms")
+  private Integer durationMs;
 
-    @Column("album_name")
-    private String albumName;
+  @Column("album_name")
+  private String albumName;
 
-    @Column("album_release_date")
-    private LocalDate albumReleaseDate;
+  @Column("album_release_date")
+  private LocalDate albumReleaseDate;
 
-    @Column("danceability")
-    private BigDecimal danceability;
+  @Column("danceability")
+  private BigDecimal danceability;
 
-    @Column("energy")
-    private BigDecimal energy;
+  @Column("energy")
+  private BigDecimal energy;
 
-    @Column("key")
-    private Integer key;
+  @Column("key")
+  private Integer key;
 
-    @Column("loudness")
-    private BigDecimal loudness;
+  @Column("loudness")
+  private BigDecimal loudness;
 
-    @Column("mode")
-    private Integer mode;
+  @Column("mode")
+  private Integer mode;
 
-    @Column("speechiness")
-    private BigDecimal speechiness;
+  @Column("speechiness")
+  private BigDecimal speechiness;
 
-    @Column("acousticness")
-    private BigDecimal acousticness;
+  @Column("acousticness")
+  private BigDecimal acousticness;
 
-    @Column("instrumentalness")
-    private BigDecimal instrumentalness;
+  @Column("instrumentalness")
+  private BigDecimal instrumentalness;
 
-    @Column("liveness")
-    private BigDecimal liveness;
+  @Column("liveness")
+  private BigDecimal liveness;
 
-    @Column("valence")
-    private BigDecimal valence;
+  @Column("valence")
+  private BigDecimal valence;
 
-    @Column("tempo")
-    private BigDecimal tempo;
+  @Column("tempo")
+  private BigDecimal tempo;
 
-    @Column("time_signature")
-    private Integer timeSignature;
+  @Column("time_signature")
+  private Integer timeSignature;
 
-    @CreatedDate
-    @Column("created_at")
-    private LocalDateTime createdAt;
+  @CreatedDate
+  @Column("created_at")
+  private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    @Column("updated_at")
-    private LocalDateTime updatedAt;
+  @LastModifiedDate
+  @Column("updated_at")
+  private LocalDateTime updatedAt;
 }

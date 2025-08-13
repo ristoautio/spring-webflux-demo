@@ -10,10 +10,10 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class SongController {
 
-    private SongService songService;
+  private SongService songService;
 
-     @GetMapping("/songs/{id}")
-     public Mono<SongDto> getSongById(@PathVariable Long id) {
-         return songService.getSongById(id);
-     }
+  @GetMapping("/songs/{id}")
+  public Mono<SongDto> getSongById(@PathVariable Long id) {
+    return songService.getSongById(id);
+  }
 }

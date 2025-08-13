@@ -10,10 +10,11 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class SongService {
 
-    private final SongRepository songRepository;
+  private final SongRepository songRepository;
 
-     public Mono<SongDto> getSongById(Long id) {
-         return songRepository.getById(id)
-                 .switchIfEmpty(Mono.error(() -> new SongNotFoundException("not found")));
-     }
+  public Mono<SongDto> getSongById(Long id) {
+    return songRepository
+        .getById(id)
+        .switchIfEmpty(Mono.error(() -> new SongNotFoundException("not found")));
+  }
 }
