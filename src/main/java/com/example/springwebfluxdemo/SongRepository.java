@@ -1,13 +1,15 @@
 package com.example.springwebfluxdemo;
 
 import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface SongRepository extends ReactiveCrudRepository<SpotifySong, Long> {
+public interface SongRepository
+    extends ReactiveCrudRepository<SpotifySong, Long>, ReactiveQueryByExampleExecutor<SpotifySong> {
 
   Mono<SongDto> getById(Long id);
 
