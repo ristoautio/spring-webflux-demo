@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   spring-app:
-    image: flux-test-jlink
+    image: flux-test-native3
     container_name: flux-test
     ports:
       - "8080:8080"

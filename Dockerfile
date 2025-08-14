@@ -1,71 +1,73 @@
-# Build stage
-FROM eclipse-temurin:21-jdk-alpine AS build
+# Build stage with Ubuntu and GraalVM
+FROM ubuntu:22.04 AS build
+
+# Set environment to avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install required packages
+RUN apt-get update && \
+    apt-get install -y wget curl unzip gcc g++ libc6-dev zlib1g-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install GraalVM manually
+ENV JAVA_HOME=/opt/graalvm
+ENV PATH="$JAVA_HOME/bin:$PATH"
+
+# Download and install GraalVM for the correct architecture
+RUN ARCH=$(uname -m | sed 's/aarch64/aarch64/;s/x86_64/x64/') && \
+    echo "Detected architecture: $ARCH" && \
+    wget -O graalvm.tar.gz "https://download.oracle.com/graalvm/21/latest/graalvm-jdk-21_linux-${ARCH}_bin.tar.gz" && \
+    mkdir -p /opt && \
+    tar -xzf graalvm.tar.gz -C /opt && \
+    rm graalvm.tar.gz && \
+    mv /opt/graalvm-* $JAVA_HOME
+
+# Verify Java installation and install native-image
+RUN java -version
+#&& \
+ #   $JAVA_HOME/bin/gu install native-image
 
 WORKDIR /app
 
-# Copy and build application
+# Copy Maven files
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
+
+# Download dependencies
 RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
+# Copy source and build
 COPY src src
-RUN ./mvnw clean package -DskipTests
 
-# Extract application for dependency analysis
-RUN mkdir -p target/dependency && cd target/dependency && jar -xf ../*.jar
+# Build native image
+RUN ./mvnw clean package -Pnative -DskipTests
 
-# Determine required modules
-RUN jdeps --ignore-missing-deps -q \
-    --recursive \
-    --multi-release 21 \
-    --print-module-deps \
-    --class-path 'target/dependency/BOOT-INF/lib/*' \
-    target/*.jar > jre-modules.txt && cat jre-modules.txt
+# Runtime stage - Use Ubuntu instead of Alpine for glibc compatibility
+FROM ubuntu:22.04
 
-# Add essential modules for Spring Boot
-#RUN echo "java.base,java.logging,java.xml,java.desktop,java.management,java.security.jgss,java.instrument,java.net.http,java.security.sasl,jdk.unsupported,jdk.crypto.ec" >> jre-modules.txt
-
-# Create minimal JRE
-RUN cat jre-modules.txt | tr '\n' ',' | sed 's/,$//' > modules.list && \
-    jlink --add-modules $(cat modules.list) \
-          --strip-debug \
-          --compress 2 \
-          --no-header-files \
-          --no-man-pages \
-          --output /custom-jre
-
-# Runtime stage
-FROM alpine:3.18
-
-# Install required packages
-RUN apk add --no-cache \
-    curl \
-    gcompat \
-    && addgroup -g 1001 spring \
-    && adduser -D -s /bin/sh -u 1001 -G spring spring
-
-# Set up Java
-ENV JAVA_HOME=/opt/java
-ENV PATH="$JAVA_HOME/bin:$PATH"
-
-# Copy JRE
-COPY --from=build /custom-jre $JAVA_HOME
-
-# Verify Java installation
-RUN java -version
+# Install minimal runtime dependencies
+RUN apt-get update && \
+    apt-get install -y curl ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    groupadd -r spring && useradd -r -g spring spring
 
 WORKDIR /app
 
-# Copy application
-COPY --from=build /app/target/*.jar app.jar
-RUN chown spring:spring app.jar
+# Copy native executable
+COPY --from=build /app/target/spring-webflux-demo app
+
+# Make executable and change ownership
+RUN chmod +x app && chown spring:spring app
 
 USER spring
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
     CMD curl -f http://localhost:8080/actuator/health || exit 1
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the native application
+ENTRYPOINT ["./app"]
