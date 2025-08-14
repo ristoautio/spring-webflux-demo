@@ -24,8 +24,6 @@ RUN ARCH=$(uname -m | sed 's/aarch64/aarch64/;s/x86_64/x64/') && \
 
 # Verify Java installation and install native-image
 RUN java -version
-#&& \
- #   $JAVA_HOME/bin/gu install native-image
 
 WORKDIR /app
 
@@ -43,23 +41,20 @@ COPY src src
 # Build native image
 RUN ./mvnw clean package -Pnative -DskipTests
 
-# Runtime stage - Use Ubuntu instead of Alpine for glibc compatibility
-FROM ubuntu:22.04
+# Set permissions in build stage to avoid layer duplication
+RUN chmod +x /app/target/spring-webflux-demo
 
-# Install minimal runtime dependencies
-RUN apt-get update && \
-    apt-get install -y curl ca-certificates && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    groupadd -r spring && useradd -r -g spring spring
+FROM alpine:3.20
+
+# Install minimal runtime dependencies + gcompat for glibc compatibility
+RUN apk add --no-cache curl ca-certificates gcompat && \
+    addgroup -g 1001 spring && \
+    adduser -D -s /bin/sh -u 1001 -G spring spring
 
 WORKDIR /app
 
-# Copy native executable
-COPY --from=build /app/target/spring-webflux-demo app
-
-# Make executable and change ownership
-RUN chmod +x app && chown spring:spring app
+# Copy with correct ownership directly (no chmod/chown needed)
+COPY --from=build --chown=spring:spring /app/target/spring-webflux-demo app
 
 USER spring
 
