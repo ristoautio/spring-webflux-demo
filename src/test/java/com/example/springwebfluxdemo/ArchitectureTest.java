@@ -5,6 +5,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
+import static com.tngtech.archunit.library.freeze.FreezingArchRule.freeze;
 
 import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.importer.ImportOption;
@@ -51,7 +52,8 @@ public class ArchitectureTest {
   public static final ArchRule noCycles =
       slices().matching("com.example.(*)..").should().beFreeOfCycles();
 
-  @ArchTest ArchRule logging = methods().that().areAnnotatedWith(PostMapping.class).should(log());
+  @ArchTest
+  ArchRule logging = freeze(methods().that().areAnnotatedWith(PostMapping.class).should(log()));
 
   private ArchCondition<? super JavaMethod> log() {
     return new ArchCondition<JavaMethod>("log") {

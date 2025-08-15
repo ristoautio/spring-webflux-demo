@@ -46,4 +46,11 @@ public class SongController {
     log.info("found songs: {}", song.count().block());
     return Mono.empty();
   }
+
+  // just to test arch unit (frozen allow)
+  @PostMapping("/test2")
+  public Mono<Void> createSongFrozen(@RequestBody SongDto songDto) {
+    Flux<SongDto> song = songService.findByName(songDto.getName());
+    return Mono.empty();
+  }
 }
