@@ -23,6 +23,9 @@ RUN jdeps --ignore-missing-deps -q \
     --class-path 'target/dependency/BOOT-INF/lib/*' \
     target/*.jar > jre-modules.txt && cat jre-modules.txt
 
+# Set permissions in build stage to avoid layer duplication
+RUN chmod +x target/*.jar
+
 # Add essential modules for Spring Boot
 #RUN echo "java.base,java.logging,java.xml,java.desktop,java.management,java.security.jgss,java.instrument,java.net.http,java.security.sasl,jdk.unsupported,jdk.crypto.ec" >> jre-modules.txt
 
@@ -58,8 +61,10 @@ RUN java -version
 WORKDIR /app
 
 # Copy application
-COPY --from=build /app/target/*.jar app.jar
-RUN chown spring:spring app.jar
+#COPY --from=build /app/target/*.jar app.jar
+#RUN chown spring:spring app.jar
+
+COPY --from=build --chown=spring:spring /app/target/*.jar app.jar
 
 USER spring
 
