@@ -1,5 +1,6 @@
 package com.example.springwebfluxdemo;
 
+import static com.tngtech.archunit.lang.ConditionEvent.createMessage;
 import static com.tngtech.archunit.lang.SimpleConditionEvent.violated;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
@@ -63,7 +64,7 @@ public class ArchitectureTest {
             method.getMethodCallsFromSelf().stream()
                 .anyMatch(javaMethod -> javaMethod.getTargetOwner().isEquivalentTo(Logger.class));
         if (!logCalled) {
-          events.add(violated(method, "Method should call Logger"));
+          events.add(violated(method, createMessage(method, "Method should call Logger")));
         }
       }
     };

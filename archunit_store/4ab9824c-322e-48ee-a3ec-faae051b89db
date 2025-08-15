@@ -1,0 +1,1 @@
+Method <com.example.springwebfluxdemo.controller.SongController.createSongFrozen(com.example.springwebfluxdemo.SongDto)> Method should call Logger in (SongController.java:53)
