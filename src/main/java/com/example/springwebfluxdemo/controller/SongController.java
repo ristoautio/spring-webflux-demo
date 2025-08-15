@@ -6,10 +6,7 @@ import com.example.springwebfluxdemo.SongDto;
 import com.example.springwebfluxdemo.service.SongService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -40,5 +37,13 @@ public class SongController {
   public String testClientBlocking() {
     log.info("test blocking client");
     return songService.getFromRemoteBlocking();
+  }
+
+  // just to test arch unit
+  @PostMapping
+  public Mono<Void> createSong(@RequestBody SongDto songDto) {
+    Flux<SongDto> song = songService.findByName(songDto.getName());
+    log.info("found songs: {}", song.count().block());
+    return Mono.empty();
   }
 }
