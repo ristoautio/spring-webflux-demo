@@ -1,5 +1,7 @@
-package com.example.springwebfluxdemo;
+package com.example.springwebfluxdemo.repository;
 
+import com.example.springwebfluxdemo.SongDto;
+import com.example.springwebfluxdemo.SpotifySong;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;

@@ -1,7 +1,9 @@
-package com.example.springwebfluxdemo;
+package com.example.springwebfluxdemo.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
 
+import com.example.springwebfluxdemo.SongDto;
+import com.example.springwebfluxdemo.service.SongService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
