@@ -15,6 +15,7 @@ import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
+import com.tngtech.archunit.library.GeneralCodingRules;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -52,6 +53,9 @@ public class ArchitectureTest {
   @ArchTest
   public static final ArchRule noCycles =
       slices().matching("com.example.(*)..").should().beFreeOfCycles();
+
+  @ArchTest ArchRule noSystemOut = GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS;
+  @ArchTest ArchRule doNotCallDeprecated = GeneralCodingRules.DEPRECATED_API_SHOULD_NOT_BE_USED;
 
   @ArchTest
   ArchRule logging = freeze(methods().that().areAnnotatedWith(PostMapping.class).should(log()));
