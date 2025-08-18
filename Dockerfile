@@ -44,7 +44,7 @@ RUN ./mvnw clean package -Pnative -DskipTests
 # Set permissions in build stage to avoid layer duplication
 RUN chmod +x /app/target/spring-webflux-demo
 
-FROM alpine:3.20
+FROM alpine:3.22
 
 # Install minimal runtime dependencies + gcompat for glibc compatibility
 RUN apk add --no-cache curl ca-certificates gcompat && \
