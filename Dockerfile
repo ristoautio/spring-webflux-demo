@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install required packages
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y wget curl unzip gcc g++ libc6-dev zlib1g-dev && \
+    apt-get install --no-install-recommends -y wget curl unzip gcc g++ libc6-dev zlib1g-dev ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
 # Install GraalVM manually
