@@ -1,8 +1,13 @@
-name: build and deploy spring-api
+name: test and build
 on:
-  push:
-    branches:
-      - main
+    pull_request:
+        branches:
+            - main
+        types:
+            - opened
+            - synchronize
+            - reopened
+
 jobs:
   build-deploy:
     name: build
@@ -27,9 +32,3 @@ jobs:
         run: |
           mvn clean
           mvn -B package --file pom.xml
-      - name: build the docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          dockerfile: Dockerfile
-          push: false
