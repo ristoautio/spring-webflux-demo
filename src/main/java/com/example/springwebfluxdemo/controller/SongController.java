@@ -43,6 +43,7 @@ public class SongController {
   @PostMapping
   public Mono<Void> createSong(@RequestBody SongDto songDto) {
     Flux<SongDto> song = songService.findByName(songDto.getName());
+    log.info("found songs: {}", song.count().block());
     return Mono.empty();
   }
 
