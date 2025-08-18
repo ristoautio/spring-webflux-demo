@@ -3,7 +3,7 @@ on: push
 jobs:
   build-deploy:
     name: build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: start
         run: echo "🎉 The job was automatically triggered by ${{ github.actor }}"
@@ -30,4 +30,3 @@ jobs:
           context: .
           dockerfile: Dockerfile
           push: false
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/rest-api:latest
