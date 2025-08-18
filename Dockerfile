@@ -1,5 +1,5 @@
 # Build stage with Ubuntu and GraalVM
-FROM ubuntu:22.04 AS build
+FROM ubuntu:24.04 AS build
 
 # Set environment to avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
