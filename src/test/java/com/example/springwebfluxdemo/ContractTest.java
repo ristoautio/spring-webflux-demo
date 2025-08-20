@@ -11,8 +11,9 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest
 @AutoConfigureWebTestClient
 @AutoConfigureStubRunner(
-    ids = {"com.example:spring-cloud-contract-demo:0.0.1-SNAPSHOT:stubs:6565"},
-    stubsMode = StubRunnerProperties.StubsMode.LOCAL)
+        stubsMode = StubRunnerProperties.StubsMode.REMOTE,
+        repositoryRoot = "git://git@github.com:ristoautio/spring-cloud-contract-demo.git",
+        ids = {"com.example:spring-cloud-contract-demo:0.0.1-SNAPSHOT:stubs:6565"})
 public class ContractTest extends ITBase {
 
   @Autowired private WebTestClient webTestClient;
