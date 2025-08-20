@@ -7,61 +7,20 @@ import java.math.BigDecimal;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Select;
-import org.junit.ClassRule;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
-class SongControllerIT {
+class SongControllerIT extends ITBase {
 
   @Autowired private WebTestClient webTestClient;
 
   @Autowired private SongRepository songRepository;
-
-  @ClassRule
-  public static PostgreSQLContainer postgres =
-      new PostgreSQLContainer("postgres:11.1")
-          .withDatabaseName("integration-tests-db")
-          .withUsername("sa")
-          .withPassword("sa");
-
-  @DynamicPropertySource
-  static void configureProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.flyway.url", postgres::getJdbcUrl);
-    registry.add(
-        "spring.r2dbc.url",
-        () ->
-            "r2dbc:postgresql://"
-                + postgres.getHost()
-                + ":"
-                + postgres.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)
-                + "/"
-                + postgres.getDatabaseName());
-    registry.add("spring.r2dbc.username", postgres::getUsername);
-    registry.add("spring.r2dbc.password", postgres::getPassword);
-  }
-
-  // start container
-  @BeforeAll
-  static void beforeAll() {
-    postgres.start();
-  }
-
-  // stop container
-  @AfterAll
-  static void afterAll() {
-    postgres.stop();
-  }
 
   @Test
   public void getSongById_returnsSongDto_whenSongExists() {
