@@ -2,6 +2,7 @@ package com.example.springwebfluxdemo.service;
 
 import com.example.springwebfluxdemo.SongDto;
 import com.example.springwebfluxdemo.SongNotFoundException;
+import com.example.springwebfluxdemo.SpotifySong;
 import com.example.springwebfluxdemo.repository.SongRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,5 +44,29 @@ public class SongService {
   public String getFromRemoteBlocking() {
     return restTemplate.getForObject(
         "https://dummyjson.com/c/3029-d29f-4014-9fb4?delay=5000", String.class);
+  }
+
+  public Mono<Void> create(SongDto songDto) {
+    return songRepository
+        .save(
+            SpotifySong.builder()
+                .spotifyId(songDto.getSpotifyId())
+                .name(songDto.getName())
+                .artists(songDto.getArtists())
+                .isExplicit(false)
+                .durationMs(0)
+                .dailyRank(0)
+                .dailyMovement(0)
+                .weeklyMovement(0)
+                .country("US")
+                .snapshotDate(null)
+                .popularity(0)
+                .build())
+        .onErrorResume(
+            error -> {
+              log.error("Error fetching song from external service", error);
+              return Mono.empty();
+            })
+        .thenEmpty(Mono.empty());
   }
 }

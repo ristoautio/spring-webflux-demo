@@ -23,8 +23,10 @@ public class SongController {
   }
 
   @GetMapping(value = "/search", produces = APPLICATION_NDJSON_VALUE)
-  public Flux<SongDto> searchSongs(@RequestParam(value = "search", defaultValue = "") String name) {
-    return songService.findByName(name);
+  public Flux<SongDto> searchSongs(
+      @RequestParam(value = "search", defaultValue = "") String search) {
+    //    log.info("Searching for songs by search: {}", search);
+    return songService.findByName(search);
   }
 
   @GetMapping(value = "/test")
@@ -42,9 +44,7 @@ public class SongController {
   // just to test arch unit
   @PostMapping
   public Mono<Void> createSong(@RequestBody SongDto songDto) {
-    Flux<SongDto> song = songService.findByName(songDto.getName());
-    log.info("found songs: {}", song.count().block());
-    return Mono.empty();
+    return songService.create(songDto);
   }
 
   // just to test arch unit (frozen allow)
