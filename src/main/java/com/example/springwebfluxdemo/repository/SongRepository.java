@@ -15,6 +15,6 @@ public interface SongRepository
 
   Mono<SongDto> getById(Long id);
 
-  @Query("SELECT * FROM spotify_song WHERE name ILIKE :name")
+  @Query("SELECT * FROM spotify_song WHERE name ILIKE :name LIMIT 1")
   Flux<SongDto> findByName(String name);
 }

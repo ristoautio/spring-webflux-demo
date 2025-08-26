@@ -11,8 +11,6 @@ import com.structurizr.model.Component;
 import com.structurizr.model.Container;
 import com.structurizr.model.Model;
 import com.structurizr.model.SoftwareSystem;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
