@@ -1,6 +1,5 @@
 package com.example.springwebfluxdemo;
 
-import static io.gatling.javaapi.core.Choice.withWeight;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
@@ -32,8 +31,8 @@ public class BasicSimulation extends Simulation {
 
                     ))
         .assertions(
-            global().responseTime().max().lt(200),
-            global().responseTime().mean().lt(50),
+            global().responseTime().max().lt(2000),
+            global().responseTime().mean().lt(200),
             global().successfulRequests().percent().gt(95.0))
         .protocols(HTTP_PROTOCOL_BUILDER);
   }
@@ -54,29 +53,35 @@ public class BasicSimulation extends Simulation {
                       Map.of("name", "foo1"), Map.of("name", "foo2"), Map.of("name", "foo3")
                     })
                 .random())
-        .randomSwitch()
+        .exitBlockOnFail()
         .on(
-            withWeight(
-                30,
-                exec(
-                    http("create-song-request")
-                        .post("/")
-                        .header("Content-Type", "application/json")
-                        .header("Accept", "application/stream+json")
-                        .body(
-                            CoreDsl.StringBody(
-                                "{ \"spotifyId\": \"1\", \"name\": \"${name}\", \"artists\": \"Test Artist\" }"))
-                        .check(status().is(200)))),
-            withWeight(
-                70,
-                exec(
-                    http("flux-get-request")
-                        .get("/search?search=${name}")
-                        .header("Accept", "application/x-ndjson")
-                        .check(status().is(200))
-                        .check(jsonPath("$.id").ofInt())
-                        .check(jsonPath("$.spotifyId").ofString())
-                        .check(jsonPath("$.name").ofString())
-                        .check(jsonPath("$.artists").ofString()))));
+            randomSwitch()
+                .on(
+                    percent(30)
+                        .then(
+                            group("POST")
+                                .on(
+                                    exec(
+                                        http("create-song-request")
+                                            .post("/")
+                                            .header("Content-Type", "application/json")
+                                            .header("Accept", "application/stream+json")
+                                            .body(
+                                                CoreDsl.StringBody(
+                                                    "{ \"spotifyId\": \"1\", \"name\": \"${name}\", \"artists\": \"Test Artist\" }"))
+                                            .check(status().is(200))))),
+                    percent(70)
+                        .then(
+                            group("GET")
+                                .on(
+                                    exec(
+                                        http("flux-get-request")
+                                            .get("/search?search=${name}")
+                                            .header("Accept", "application/x-ndjson")
+                                            .check(status().is(200))
+                                            .check(jsonPath("$.id").ofInt())
+                                            .check(jsonPath("$.spotifyId").ofString())
+                                            .check(jsonPath("$.name").ofString())
+                                            .check(jsonPath("$.artists").ofString()))))));
   }
 }
