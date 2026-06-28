@@ -145,7 +145,7 @@
         <dependency>
             <groupId>com.structurizr</groupId>
             <artifactId>structurizr-component</artifactId>
-            <version>4.1.0</version>
+            <version>6.2.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -158,7 +158,7 @@
         <dependency>
             <groupId>com.structurizr</groupId>
             <artifactId>structurizr-component</artifactId>
-            <version>4.1.0</version>
+            <version>6.2.2</version>
             <scope>test</scope>
         </dependency>
 
